@@ -17,14 +17,14 @@
  * @date    2020-06-15
  */
 
-#include <ex2_hal/ex2_hyperion_solar_panel_software/equipment_handler/include/adc_handler.h>
+#include "adc_handler.h"
 #include <stdint.h>
 
 /**
  * @brief
- * 		Initialize ADC_Handler for config 1 (include Port, Port Deployable, Starboard, StarBoard Deployable, Zenith)
- * @details
- * 		
+ * 		Initialize ADC_Handler
+ * @attention
+ * 		this functions must be called before getting any values
  * @return
  * 		1 == success
  */
@@ -39,6 +39,12 @@ unsigned char adc_init(uint8_t slave_addr, uint8_t channel) {
     return 1;
 }
 
+/**
+ * @brief
+ * 		Function to write to the adc via i2c
+ * @return
+ * 		None
+ */
 void adc_write(uint8_t *buf, int size, uint8_t slave_addr) {
     i2cSetSlaveAdd(ADC_i2c_PORT, slave_addr);
     i2cSetDirection(i2cREG1, I2C_TRANSMITTER);
@@ -62,6 +68,13 @@ void adc_write(uint8_t *buf, int size, uint8_t slave_addr) {
     i2cClearSCD(ADC_i2c_PORT);
 }
 
+
+/**
+ * @brief
+ * 		Function to read from the adc via i2c
+ * @return
+ * 		None
+ */
 void adc_read(uint8_t *data, uint32_t length, uint8_t slave_addr) {
     i2cSetSlaveAdd(ADC_i2c_PORT, slave_addr);
     i2cSetDirection(i2cREG1, I2C_RECEIVER);
@@ -226,9 +239,13 @@ float adc_calculate_sensor_temp(unsigned short value, float vref) {
 
     // Conversion parameters from temperature sensor datasheet
     // https://www.ti.com/lit/ds/symlink/lmt70.pdf?HQS=dis-dk-null-digikeymode-dsf-pf-null-wwe&ts=1622648303670
-    float voltage_vect[22] = {1375.219, 1350.441,1300.593,1250.398,1199.884,1149.070,1097.987,1046.647,995.050,943.227,891.178,838.882,786.36,733.608,680.654,627.49,574.117,520.551,466.76,412.739,358.164,302.785};
-    float slope[22] = {4.958,4.976,5.002,5.036,5.066,5.108,5.121,5.134,5.171,5.194,5.217,5.241,5.264,5.285,5.306,5.327,5.347,5.368,5.391,5.43,5.498,5.538};
-    float temps[22] = {-55,-50,-40,-30,-20,-10,0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150};
+    // float voltage_vect[22] = {1375.219, 1350.441,1300.593,1250.398,1199.884,1149.070,1097.987,1046.647,995.050,943.227,891.178,838.882,786.36,733.608,680.654,627.49,574.117,520.551,466.76,412.739,358.164,302.785};
+    // float slope[22] = {4.958,4.976,5.002,5.036,5.066,5.108,5.121,5.134,5.171,5.194,5.217,5.241,5.264,5.285,5.306,5.327,5.347,5.368,5.391,5.43,5.498,5.538};
+    // float temps[22] = {-55,-50,-40,-30,-20,-10,0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150};
+
+    float voltage_vect[39] = {100,150,200,250,300,350,400,450,500,550,600,650,700,750,800,850,900,950,1000,1050,1100,1150,1200,1250,1300,1350,1400,1450,1500,1550.5,1601,1651.5,1702,1752.5,1805.5,1858.5,1911.5,1964.5,2017.5};
+    float slope[39] = {};
+    float temps[39] = {-40,-35,-30,-35,-20,-15,-10,-5,0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100,105,110,115,120,125,130,135,140,145,150};
 
     //interpolates between the previously defined voltage to temperature conversions.
 
@@ -305,7 +322,7 @@ float adc_calculate_sensor_current(unsigned short value, float vref)
  */
 float adc_calculate_sensor_pd(unsigned short value, float vref)
 {
-    float val = adc_calculate_vin(value, vref);
+    float val = adc_calculate_vin(value, vref)/vref/1000*100;
 
     return val;
 }
