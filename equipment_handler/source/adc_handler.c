@@ -24,7 +24,7 @@
  * @brief
  * 		Initialize ADC_Handler
  * @attention
- * 		this functions must be called before getting any values
+ * 		this function must be called before getting any values
  * @return
  * 		1 == success
  */
@@ -249,16 +249,14 @@ float adc_calculate_sensor_temp(unsigned short value, float vref) {
 
     //interpolates between the previously defined voltage to temperature conversions.
 
-    if (temp_voltage >= voltage_vect[0] + (temps[1]-temps[0])/2*slope[0]) {
-        celsius = temps[0]+ (temp_voltage-voltage_vect[0])/slope[0];
-    } else if (temp_voltage <= voltage_vect[21] -(10)/2 * slope[21]) {
-        celsius = temps[21]+ (temp_voltage-voltage_vect[21])/slope[21];
+    if (temp_voltage >= voltage_vect[38]) {                     // If above the highest piecewise voltage
+        celsius = temps[38]+ (temp_voltage-voltage_vect[38])/10;
+    } else if (temp_voltage <= voltage_vect[0]) {               // If beneath the lowest piecewise voltage
+        celsius = temps[0]+ (temp_voltage-voltage_vect[0])/10;
     } else {
-        for (i=1; i<20; i++) {
-            float highvolt = voltage_vect[i] + (temps[i+1]-temps[i])/2 * slope[i];
-            float lowvolt = voltage_vect[i] -(temps[i]-temps[i-1])/2 * slope[i];
-            if ((temp_voltage <= highvolt) && (temp_voltage > lowvolt)) {
-                celsius =  temps[i] - (temp_voltage-voltage_vect[i])/slope[i];
+        for (i=1; i<37; i++) {
+            if ((temp_voltage <= voltage_vect[i+1]) && (temp_voltage > voltage_vect[i])) {
+                celsius =  temps[i] + (temp_voltage-voltage_vect[i])/10;
                 break;
             }
         }
