@@ -21,7 +21,7 @@
 #ifndef ADC_HANDLER_H
 #define ADC_HANDLER_H
 
-#include <ex2_hal/ex2_hyperion_solar_panel_software/equipment_handler/source/common_defines.h>
+#include <common_defines.h>
 #include <stdint.h>
 #include "HL_i2c.h"
 
