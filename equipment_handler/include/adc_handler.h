@@ -81,7 +81,7 @@ unsigned short control_reg_val;
 
 // Initialize ADC defaults
 unsigned char adc_init(uint8_t slave_addr, uint8_t channel);
-void adc_set_command_reg(uint8_t slave_addr,
+int adc_set_command_reg(uint8_t slave_addr,
                                 uint8_t channel,
                                 uint8_t ext_ref,
                                 uint8_t tsense,
@@ -89,10 +89,10 @@ void adc_set_command_reg(uint8_t slave_addr,
                                 uint8_t reset,
                                 uint8_t autocycle);
 
-void adc_set_register_pointer(uint8_t slave_addr, uint8_t reg_sel);
+int adc_set_register_pointer(uint8_t slave_addr, uint8_t reg_sel);
 
 //return the raw value from the adc
-void adc_get_raw(uint8_t slave_addr, unsigned short *data, unsigned char *ch);
+int adc_get_raw(uint8_t slave_addr, unsigned short *data, unsigned char *ch);
 
 //calculate the vin voltage value
 float adc_calculate_vin(unsigned short value, float vref);
