@@ -30,7 +30,6 @@
  * 		1 == success
  */
 unsigned char adc_init(uint8_t slave_addr, uint8_t channel) {
-    int delay;
     adc_set_command_reg(slave_addr, channel, 0, 1, 1, 0, 1);
     uint8_t reg_sel = 1; // select read register
     adc_set_register_pointer(slave_addr, reg_sel);
@@ -202,7 +201,6 @@ float adc_calculate_sensor_temp(unsigned short value, float vref) {
     // float temps[22] = {-55,-50,-40,-30,-20,-10,0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150};
 
     float voltage_vect[39] = {100,150,200,250,300,350,400,450,500,550,600,650,700,750,800,850,900,950,1000,1050,1100,1150,1200,1250,1300,1350,1400,1450,1500,1550.5,1601,1651.5,1702,1752.5,1805.5,1858.5,1911.5,1964.5,2017.5};
-    float slope[39] = {};
     float temps[39] = {-40,-35,-30,-35,-20,-15,-10,-5,0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100,105,110,115,120,125,130,135,140,145,150};
 
     //interpolates between the previously defined voltage to temperature conversions.
@@ -305,7 +303,7 @@ float adc_calculate_sensor_pd(unsigned short value, float vref)
  * 		Temperature value in celsius
  */
 float adc_get_tsense_temp(uint8_t slave_addr, float vref) {
-    int delay, i;
+    int delay;
     unsigned short data = 0;
     unsigned char ch = 0;
     //printf("\n ADC TEMP RESULTS: \r\n Channel    Result \r\n");
