@@ -18,8 +18,8 @@
  */
 
 #include "adc_handler.h"
-#include <stdint.h>
 #include "i2c_io.h"
+#include <stdint.h>
 
 /**
  * @brief
@@ -81,39 +81,27 @@ int adc_read(uint8_t *buf, uint32_t size, uint8_t slave_addr) {
  * 		0: success
  *      -1: fail
  */
-int adc_set_command_reg(uint8_t slave_addr,
-                            uint8_t channel,
-                            uint8_t ext_ref,
-                            uint8_t tsense,
-                            uint8_t noise_delay,
-                            uint8_t reset,
-                            uint8_t autocycle)
-{
+int adc_set_command_reg(uint8_t slave_addr, uint8_t channel, uint8_t ext_ref, uint8_t tsense, uint8_t noise_delay,
+                        uint8_t reset, uint8_t autocycle) {
     int return_val;
-    uint8_t buffer[3] = {0,0,0};
+    uint8_t buffer[3] = {0, 0, 0};
 
     uint8_t control_reg_value = 0;
     buffer[1] = channel;
 
-    control_reg_value = (ext_ref * AD7291_EXT_REF) |
-                        (tsense * AD7291_TSENSE)   |
-                        (reset * AD7291_RESET)     |
-                        (noise_delay * AD7291_NOISE_DELAY) |
-                        (autocycle * AD7291_REPEAT);
+    control_reg_value = (ext_ref * AD7291_EXT_REF) | (tsense * AD7291_TSENSE) | (reset * AD7291_RESET) |
+                        (noise_delay * AD7291_NOISE_DELAY) | (autocycle * AD7291_REPEAT);
 
     buffer[2] = control_reg_value;
-  
-    //i2c data send
-    return_val = adc_write(buffer, 3, slave_addr);
 
+    // i2c data send
+    return_val = adc_write(buffer, 3, slave_addr);
 
     control_reg_val = control_reg_value;
     return return_val;
 }
 
-int adc_set_register_pointer(uint8_t slave_addr, uint8_t reg_sel) {
-    return adc_write(&reg_sel, 1, slave_addr);
-}
+int adc_set_register_pointer(uint8_t slave_addr, uint8_t reg_sel) { return adc_write(&reg_sel, 1, slave_addr); }
 
 /**
  * @brief
@@ -132,24 +120,22 @@ int adc_set_register_pointer(uint8_t slave_addr, uint8_t reg_sel) {
  * 		0: success
  *      -1: fail
  */
-int adc_get_raw(uint8_t slave_addr, unsigned short *data, unsigned char *ch)
-{  
+int adc_get_raw(uint8_t slave_addr, unsigned short *data, unsigned char *ch) {
     int ret;
-    unsigned char buffer[2] = {0,0};
+    unsigned char buffer[2] = {0, 0};
 
-    //i2c slave read
+    // i2c slave read
     ret = adc_read(buffer, 2, slave_addr);
 
     unsigned short value = (buffer[0] << 8) | buffer[1];
 
-    //get current channel (first 4 bits)
-    *ch   = (value >> 12);
+    // get current channel (first 4 bits)
+    *ch = (value >> 12);
 
-    //remove channel information from the 16 bit read.
+    // remove channel information from the 16 bit read.
     value = value - (*ch << 12);
-    //get current data channel as well.
+    // get current data channel as well.
 
-    
     *data = value;
     return ret;
 }
@@ -191,33 +177,40 @@ float adc_calculate_sensor_temp(unsigned short value, float vref) {
     float celsius = 0;
     int i = 0;
 
-    //change into mv
+    // change into mv
     float temp_voltage = adc_calculate_vin(value, vref);
 
     // Conversion parameters from temperature sensor datasheet
     // https://www.ti.com/lit/ds/symlink/lmt70.pdf?HQS=dis-dk-null-digikeymode-dsf-pf-null-wwe&ts=1622648303670
-    // float voltage_vect[22] = {1375.219, 1350.441,1300.593,1250.398,1199.884,1149.070,1097.987,1046.647,995.050,943.227,891.178,838.882,786.36,733.608,680.654,627.49,574.117,520.551,466.76,412.739,358.164,302.785};
-    // float slope[22] = {4.958,4.976,5.002,5.036,5.066,5.108,5.121,5.134,5.171,5.194,5.217,5.241,5.264,5.285,5.306,5.327,5.347,5.368,5.391,5.43,5.498,5.538};
+    // float voltage_vect[22] = {1375.219,
+    // 1350.441,1300.593,1250.398,1199.884,1149.070,1097.987,1046.647,995.050,943.227,891.178,838.882,786.36,733.608,680.654,627.49,574.117,520.551,466.76,412.739,358.164,302.785};
+    // float slope[22] =
+    // {4.958,4.976,5.002,5.036,5.066,5.108,5.121,5.134,5.171,5.194,5.217,5.241,5.264,5.285,5.306,5.327,5.347,5.368,5.391,5.43,5.498,5.538};
     // float temps[22] = {-55,-50,-40,-30,-20,-10,0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150};
 
-    float voltage_vect[39] = {100,150,200,250,300,350,400,450,500,550,600,650,700,750,800,850,900,950,1000,1050,1100,1150,1200,1250,1300,1350,1400,1450,1500,1550.5,1601,1651.5,1702,1752.5,1805.5,1858.5,1911.5,1964.5,2017.5};
-    float temps[39] = {-40,-35,-30,-35,-20,-15,-10,-5,0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100,105,110,115,120,125,130,135,140,145,150};
+    float voltage_vect[39] = {100,  150,    200,  250,    300,    350,    400,    450,    500,   550,
+                              600,  650,    700,  750,    800,    850,    900,    950,    1000,  1050,
+                              1100, 1150,   1200, 1250,   1300,   1350,   1400,   1450,   1500,  1550.5,
+                              1601, 1651.5, 1702, 1752.5, 1805.5, 1858.5, 1911.5, 1964.5, 2017.5};
+    float temps[39] = {-40, -35, -30, -35, -20, -15, -10, -5,  0,   5,   10,  15,  20,
+                       25,  30,  35,  40,  45,  50,  55,  60,  65,  70,  75,  80,  85,
+                       90,  95,  100, 105, 110, 115, 120, 125, 130, 135, 140, 145, 150};
 
-    //interpolates between the previously defined voltage to temperature conversions.
+    // interpolates between the previously defined voltage to temperature conversions.
 
-    if (temp_voltage >= voltage_vect[38]) {                     // If above the highest piecewise voltage
-        celsius = temps[38]+ (temp_voltage-voltage_vect[38])/10;
-    } else if (temp_voltage <= voltage_vect[0]) {               // If beneath the lowest piecewise voltage
-        celsius = temps[0]+ (temp_voltage-voltage_vect[0])/10;
+    if (temp_voltage >= voltage_vect[38]) { // If above the highest piecewise voltage
+        celsius = temps[38] + (temp_voltage - voltage_vect[38]) / 10;
+    } else if (temp_voltage <= voltage_vect[0]) { // If beneath the lowest piecewise voltage
+        celsius = temps[0] + (temp_voltage - voltage_vect[0]) / 10;
     } else {
-        for (i=1; i<37; i++) {
-            if ((temp_voltage <= voltage_vect[i+1]) && (temp_voltage > voltage_vect[i])) {
-                celsius =  temps[i] + (temp_voltage-voltage_vect[i])/10;
+        for (i = 1; i < 37; i++) {
+            if ((temp_voltage <= voltage_vect[i + 1]) && (temp_voltage > voltage_vect[i])) {
+                celsius = temps[i] + (temp_voltage - voltage_vect[i]) / 10;
                 break;
             }
         }
     }
-    
+
     return celsius;
 }
 
@@ -236,7 +229,7 @@ float adc_calculate_sensor_temp(unsigned short value, float vref) {
 float adc_calculate_sensor_voltage(unsigned short value, float vref) {
     float val = adc_calculate_vin(value, vref);
 
-    val = val * ((VOLT_MAX - VOLT_MIN) / (ADC_VOLT_MAX - ADC_VOLT_MIN)); 
+    val = val * ((VOLT_MAX - VOLT_MIN) / (ADC_VOLT_MAX - ADC_VOLT_MIN));
 
     return val;
 }
@@ -253,11 +246,10 @@ float adc_calculate_sensor_voltage(unsigned short value, float vref) {
  * @return
  * 		Value in mA.
  */
-float adc_calculate_sensor_current(unsigned short value, float vref)
-{
+float adc_calculate_sensor_current(unsigned short value, float vref) {
     float val = adc_calculate_vin(value, vref);
 
-    val = val * ((CURR_MAX - CURR_MIN) / (ADC_VOLT_MAX - ADC_VOLT_MIN)); 
+    val = val * ((CURR_MAX - CURR_MIN) / (ADC_VOLT_MAX - ADC_VOLT_MIN));
 
     return val;
 }
@@ -274,16 +266,15 @@ float adc_calculate_sensor_current(unsigned short value, float vref)
  * @return
  * 		Value in celsius.
  */
-float adc_calculate_sensor_pd(unsigned short value, float vref)
-{
-    float val = adc_calculate_vin(value, vref)/vref/1000*100;
+float adc_calculate_sensor_pd(unsigned short value, float vref) {
+    float val = adc_calculate_vin(value, vref) / vref / 1000 * 100;
 
     return val;
 }
 
 /**
  * @brief
- * 		Converts given raw ADC temperature value (from internal temp sensor) to celsius 
+ * 		Converts given raw ADC temperature value (from internal temp sensor) to celsius
  *      (relative to reference voltage)
  * @details
  * 		The raw ADC value is retrieved from the TSENSE channel on the ADC
@@ -306,27 +297,23 @@ float adc_get_tsense_temp(uint8_t slave_addr, float vref) {
     int delay;
     unsigned short data = 0;
     unsigned char ch = 0;
-    //printf("\n ADC TEMP RESULTS: \r\n Channel    Result \r\n");
-    //loops through and requests conversion results from all channels
+    // printf("\n ADC TEMP RESULTS: \r\n Channel    Result \r\n");
+    // loops through and requests conversion results from all channels
     uint8_t reg_sel = 2;
     adc_set_register_pointer(slave_addr, reg_sel);
-    for(delay=0;delay<200000;delay++);
+    for (delay = 0; delay < 200000; delay++)
+        ;
     adc_get_raw(slave_addr, &data, &ch);
     float temp_celsius = 0;
     unsigned short value = data;
-    temp_celsius = (float)(value >> 11)*(float)(-512)
-    +(float)((value-((value >>11)<<11))>>10)*(float)(256)
-    +(float)((value-((value >>10)<<10))>>9)*(128)
-    +(float)((value-((value >>9)<<9))>>8)*(64)
-    +(float)((value-((value >>8)<<8))>>7)*(32)
-    +(float)((value-((value >>7)<<7))>>6)*(16)
-    +(float)((value-((value >>6)<<6))>>5)*(8)
-    +(float)((value-((value >>5)<<5))>>4)*(4)
-    +(float)((value-((value >>4)<<4))>>3)*(2)
-    +(float)((value-((value >>3)<<3))>>2)*(1)
-    +(float)((value-((value >>2)<<2))>>1)*(0.5)
-    +(float)((value-((value >>1)<<1))>>0)*(0.25);
-    //printf("%d          %.2f \r\n", ch, temp_celsius);
+    temp_celsius =
+        (float)(value >> 11) * (float)(-512) + (float)((value - ((value >> 11) << 11)) >> 10) * (float)(256) +
+        (float)((value - ((value >> 10) << 10)) >> 9) * (128) +
+        (float)((value - ((value >> 9) << 9)) >> 8) * (64) + (float)((value - ((value >> 8) << 8)) >> 7) * (32) +
+        (float)((value - ((value >> 7) << 7)) >> 6) * (16) + (float)((value - ((value >> 6) << 6)) >> 5) * (8) +
+        (float)((value - ((value >> 5) << 5)) >> 4) * (4) + (float)((value - ((value >> 4) << 4)) >> 3) * (2) +
+        (float)((value - ((value >> 3) << 3)) >> 2) * (1) + (float)((value - ((value >> 2) << 2)) >> 1) * (0.5) +
+        (float)((value - ((value >> 1) << 1)) >> 0) * (0.25);
+    // printf("%d          %.2f \r\n", ch, temp_celsius);
     return temp_celsius;
 }
-

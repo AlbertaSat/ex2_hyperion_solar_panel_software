@@ -80,7 +80,7 @@ void hyperion_config_1_value(enum config_1_panel_t panel, enum config_1_channel_
 void hyperion_config_2_value(enum config_2_panel_t panel, enum config_2_channel_type_t channel, void* param);
 void hyperion_config_3_value(enum config_3_panel_t panel, enum config_3_channel_type_t channel, void* param);
 
-void Hyperion_config1_getHK(Hyperion_HouseKeeping* hyperion_hk);
-void Hyperion_config3_getHK(Hyperion_HouseKeeping* hyperion_hk);
+void Hyperion_config1_getHK(Hyperion_HouseKeeping *hyperion_hk);
+void Hyperion_config3_getHK(Hyperion_HouseKeeping *hyperion_hk);
 
 #endif /* EX2_HAL_EX2_HYPERION_SOLAR_PANEL_SOFTWARE_HARDWARE_INTERFACE_INCLUDE_HYPERION_H_ */
