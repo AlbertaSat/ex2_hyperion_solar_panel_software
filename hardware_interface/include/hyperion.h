@@ -13,7 +13,7 @@
  */
 /**
  * @file    hyperion.h
- * @author  Trung Tran
+ * @author  Trung Tran, Nicholas Sorensen
  * @date    2021-06-04
  */
 
@@ -76,9 +76,9 @@ typedef struct __attribute__((packed)) {
     uint16_t Zenith_Current;
 } Hyperion_HouseKeeping;
 
-void hyperion_config_1_value(enum config_1_panel_t panel, enum config_1_channel_type_t channel, void* param);
-void hyperion_config_2_value(enum config_2_panel_t panel, enum config_2_channel_type_t channel, void* param);
-void hyperion_config_3_value(enum config_3_panel_t panel, enum config_3_channel_type_t channel, void* param);
+void hyperion_config_1_value(enum config_1_panel_t panel, enum config_1_channel_type_t channel, void *param);
+void hyperion_config_2_value(enum config_2_panel_t panel, enum config_2_channel_type_t channel, void *param);
+void hyperion_config_3_value(enum config_3_panel_t panel, enum config_3_channel_type_t channel, void *param);
 
 void Hyperion_config1_getHK(Hyperion_HouseKeeping *hyperion_hk);
 void Hyperion_config3_getHK(Hyperion_HouseKeeping *hyperion_hk);
