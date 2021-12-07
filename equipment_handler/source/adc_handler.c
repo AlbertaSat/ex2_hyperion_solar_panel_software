@@ -30,7 +30,8 @@
  * 		1 == success
  */
 unsigned char adc_init(uint8_t slave_addr, uint8_t channel) {
-    adc_set_command_reg(slave_addr, channel, AD7291_EXT_REF_SET, AD7291_TSENSE_SET, AD7291_NOISE_DELAY_SET, AD7291_RESET_SET, AD7291_REPEAT_SET);
+    adc_set_command_reg(slave_addr, channel, AD7291_EXT_REF_SET, AD7291_TSENSE_SET, AD7291_NOISE_DELAY_SET,
+                        AD7291_RESET_SET, AD7291_REPEAT_SET);
     uint8_t reg_sel = 1; // select read register
     adc_set_register_pointer(slave_addr, reg_sel);
     vTaskDelay(AD7291_INIT_DELAY_TICKS);
@@ -301,7 +302,7 @@ float adc_get_tsense_temp(uint8_t slave_addr, float vref) {
     // printf("\n ADC TEMP RESULTS: \r\n Channel    Result \r\n");
     // loops through and requests conversion results from all channels
     if (AD7291_TSENSE_AVG == true) {
-        reg_sel  = AD7291_T_AVERAGE;
+        reg_sel = AD7291_T_AVERAGE;
     } else {
         reg_sel = AD7291_T_SENSE;
     }

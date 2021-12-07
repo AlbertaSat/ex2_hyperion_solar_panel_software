@@ -66,7 +66,6 @@
 // AD7291 TSENSE Average setting
 #define AD7291_TSENSE_AVG true
 
-
 // AD7291 Control Register Map
 #define AD7291_REPEAT_SET 1
 #define AD7291_TSENSE_SET 1
