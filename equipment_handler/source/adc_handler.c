@@ -30,10 +30,10 @@
  * 		1 == success
  */
 unsigned char adc_init(uint8_t slave_addr, uint8_t channel) {
-    adc_set_command_reg(slave_addr, channel, 0, 1, 1, 0, 1);
+    adc_set_command_reg(slave_addr, channel, AD7291_EXT_REF_SET, AD7291_TSENSE_SET, AD7291_NOISE_DELAY_SET, AD7291_RESET_SET, AD7291_REPEAT_SET);
     uint8_t reg_sel = 1; // select read register
     adc_set_register_pointer(slave_addr, reg_sel);
-
+    vTaskDelay(AD7291_INIT_DELAY_TICKS);
     return 1;
 }
 
@@ -86,7 +86,7 @@ int adc_set_command_reg(uint8_t slave_addr, uint8_t channel, uint8_t ext_ref, ui
     int return_val;
     uint8_t buffer[3] = {0, 0, 0};
 
-    uint8_t control_reg_value = 0;
+    uint8_t control_reg_value = AD7291_COMMAND;
     buffer[1] = channel;
 
     control_reg_value = (ext_ref * AD7291_EXT_REF) | (tsense * AD7291_TSENSE) | (reset * AD7291_RESET) |
@@ -156,7 +156,7 @@ float adc_calculate_vin(unsigned short value, float vref) {
     float volts = 0;
 
     // from AD7291 datasheet
-    volts = ((float)value * vref * 1000) / AD7298_RES;
+    volts = ((float)value * vref * 1000) / AD7291_RES;
 
     return volts;
 }
@@ -267,7 +267,7 @@ float adc_calculate_sensor_current(unsigned short value, float vref) {
  * 		Value in celsius.
  */
 float adc_calculate_sensor_pd(unsigned short value, float vref) {
-    float val = adc_calculate_vin(value, vref) / vref / 1000 * 100;
+    float val = adc_calculate_vin(value, vref) / PD_MAX_VOLTAGE / 1000 * 100;
 
     return val;
 }
@@ -295,16 +295,21 @@ float adc_calculate_sensor_pd(unsigned short value, float vref) {
  */
 float adc_get_tsense_temp(uint8_t slave_addr, float vref) {
     int delay;
+    uint8_t reg_sel;
     unsigned short data = 0;
     unsigned char ch = 0;
     // printf("\n ADC TEMP RESULTS: \r\n Channel    Result \r\n");
     // loops through and requests conversion results from all channels
-    uint8_t reg_sel = 2;
+    if (AD7291_TSENSE_AVG == true) {
+        reg_sel  = AD7291_T_AVERAGE;
+    } else {
+        reg_sel = AD7291_T_SENSE;
+    }
+
     adc_set_register_pointer(slave_addr, reg_sel);
-    for (delay = 0; delay < 200000; delay++)
-        ;
+    vTaskDelay(AD7291_INIT_DELAY_TICKS);
     adc_get_raw(slave_addr, &data, &ch);
-    float temp_celsius = 0;
+    float temp_celsius = AD7291_BAD_TEMP;
     unsigned short value = data;
     temp_celsius =
         (float)(value >> 11) * (float)(-512) + (float)((value - ((value >> 11) << 11)) >> 10) * (float)(256) +
