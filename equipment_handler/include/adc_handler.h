@@ -13,7 +13,7 @@
  */
 /**
  * @file    adc_handler.h
- * @author  Vasu Gupta, Robert Taylor, Trung Tran
+ * @author  Vasu Gupta, Robert Taylor, Trung Tran, Nicholas Sorensen
  * @date    2020-06-15
  */
 
