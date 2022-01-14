@@ -13,7 +13,7 @@
  */
 /**
  * @file    adc_handler.h
- * @author  Vasu Gupta, Robert Taylor, Trung Tran
+ * @author  Vasu Gupta, Robert Taylor, Trung Tran, Nicholas Sorensen
  * @date    2020-06-15
  */
 
@@ -63,7 +63,16 @@
 
 #define AD7291_VOLTAGE_LIMIT_COUNT 8
 
-// AD7298 Control Register Map
+// AD7291 TSENSE Average setting
+#define AD7291_TSENSE_AVG true
+
+// AD7291 Control Register Map
+#define AD7291_REPEAT_SET 1
+#define AD7291_TSENSE_SET 1
+#define AD7291_EXT_REF_SET 0
+#define AD7291_NOISE_DELAY_SET 1
+#define AD7291_RESET_SET 0
+
 #define AD7291_REPEAT (1U << 0U)
 #define AD7291_TSENSE (1U << 7U)
 #define AD7291_EXT_REF (1U << 4U)
@@ -72,7 +81,12 @@
 #define AD7291_CLEAR_ALERT (1U << 2U)
 #define AD7291_RESET (1U << 1U)
 
-#define AD7298_RES 4096
+#define AD7291_RES 4096
+
+#define AD7291_INIT_DELAY_TICKS pdMS_TO_TICKS(0)
+
+#define AD7291_BAD_TEMP -128
+#define AD7291_BAD_PD 255
 
 unsigned short control_reg_val;
 
