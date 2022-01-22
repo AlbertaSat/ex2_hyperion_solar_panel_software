@@ -13,7 +13,7 @@
  */
 /**
  * @file    common_defines.h
- * @author  Vasu Gupta, Trung Tran
+ * @author  Vasu Gupta, Trung Tran, Nicholas Sorensen
  * @date    2020-06-17
  */
 
@@ -27,18 +27,31 @@
 
 #define ADC_VREF 2.5f // V
 
+// channel offset defines
+#define ADC_CHANNEL_0 1 << 7
+#define ADC_CHANNEL_1 1 << 6
+#define ADC_CHANNEL_2 1 << 5
+#define ADC_CHANNEL_3 1 << 4
+#define ADC_CHANNEL_4 1 << 3
+#define ADC_CHANNEL_5 1 << 2
+#define ADC_CHANNEL_6 1 << 1
+#define ADC_CHANNEL_7 1 << 0
+
 // Temperature Sensor (LMT70) constants
 #define TEMP_VOLT_MAX 1.375f // V
 #define TEMP_VOLT_MIN 0.302f // V
 #define TEMP_VAL_MAX 150     // celsius
 #define TEMP_VAL_MIN -55     // celsius
 
+// Photodiode Sensor constants
+#define PD_MAX_VOLTAGE 2.0f // V
+
 // Voltage/Current Sensor Constants
 #define ADC_VOLT_MAX 2.5f // V
 #define ADC_VOLT_MIN 0    // V
-#define VOLT_MAX 16.32f   // V
+#define VOLT_MAX 16.171f  // V
 #define VOLT_MIN 0        // V
-#define CURR_MAX 0.6f     // A
+#define CURR_MAX 0.598f   // A
 #define CURR_MIN 0        // A
 
 // Slave Address for each panel of the hyperion board
